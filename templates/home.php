@@ -1,37 +1,46 @@
 <?php declare(strict_types=1); ?>
 <section class="hero">
   <div class="hero__panel">
-    <span class="hero__kicker">ラジエター簡単検索</span>
-    <h1>ラジエーター交換、ラジエーター修理、ラジエーター水漏れの際は、ネット販売のパイオニア。</h1>
+    <span class="hero__kicker">Sample Test Site</span>
+    <h1>Test top page for unified search, pricing, cart, and special member flow.</h1>
     <p>
-      輸入車、日本車ラジエーターのネット販売のパイオニアです。ラジエーター修理、ラジエーター交換なら、
-      車検証1枚で検索、購入できます。全品送料無料です。
+      This page is for checking guest, member, and special member behavior.
+      Special member registration is accepted even before login or purchase.
     </p>
+    <div class="hero__signals" aria-label="Test points">
+      <span class="signal-pill">Role-based pricing</span>
+      <span class="signal-pill">Shared cart flow</span>
+      <span class="signal-pill">Special member registration</span>
+    </div>
+    <div class="action-row">
+      <a class="button button--primary" href="<?= e((string) ($specialEntryUrl ?? '/special-member/register')) ?>">特別会員受付フォーム</a>
+      <a class="button button--ghost" href="/login">会員ログイン</a>
+    </div>
 
     <form class="hero-search" action="/search" method="get">
       <div class="tab-row">
-        <span class="tab-row__item tab-row__item--active">日本車ラジエーター検索</span>
-        <span class="tab-row__item">輸入車ラジエーター検索</span>
-        <span class="tab-row__item">純正品番検索</span>
+        <span class="tab-row__item tab-row__item--active">Domestic</span>
+        <span class="tab-row__item">Import</span>
+        <span class="tab-row__item">Part check</span>
       </div>
       <div class="hero-search__grid">
         <label>
-          メーカー
+          Make
           <select name="make">
-            <option value="">選択してください</option>
+            <option value="">Select</option>
             <?php foreach ($makes as $make): ?>
               <option value="<?= e($make) ?>"><?= e($make) ?></option>
             <?php endforeach; ?>
           </select>
         </label>
         <label>
-          型式
-          <input type="text" name="katasiki" placeholder="例: E-AE91" data-auto-focus>
+          Model code
+          <input type="text" name="katasiki" placeholder="ex: 6AA-MXPH15" data-auto-focus>
         </label>
         <label>
-          ミッション
+          Mission
           <select name="toc">
-            <option value="">選択してください</option>
+            <option value="">Select</option>
             <option value="A/T">A/T</option>
             <option value="M/T">M/T</option>
             <option value="CVT">CVT</option>
@@ -39,7 +48,7 @@
         </label>
       </div>
       <div>
-        <button type="submit">検索する</button>
+        <button type="submit">Search</button>
       </div>
       <input type="hidden" name="mode" value="2">
     </form>
@@ -47,23 +56,23 @@
 
   <div class="hero__aside">
     <article class="card">
-      <h2>日本車ラジエーター＆コンデンサー検索</h2>
-      <p class="muted">メーカー、型式、ミッションを入力して検索してください。例）E-RA1</p>
+      <h2>Current target</h2>
+      <p class="muted">Search result, product detail, role-based pricing, and shared cart behavior.</p>
     </article>
     <article class="card">
-      <h2>驚くほど簡単です</h2>
-      <p class="muted">1. メーカーを選ぶ 2. 車検証から型式を入力 3. ミッション選択。この3ステップで、ラジエーター＆コンデンサーを特定します。</p>
+      <h2>Registration flow</h2>
+      <p class="muted">Register first, receive mail guidance, log in, then upload the business card image.</p>
     </article>
     <article class="card">
-      <h2>業者さま向け</h2>
-      <p class="muted">自動車整備・販売業者さま向けの特別会員導線も、今後この新基盤へ統合していきます。</p>
+      <h2>特別会員</h2>
+      <p class="muted">申請後は書類アップロード待ち、アップロード後は承認待ち、承認後に特別会員価格へ切り替わります。</p>
     </article>
   </div>
 </section>
 
 <section class="content-grid">
   <article class="card">
-    <h2>新着情報</h2>
+    <h2>Notes</h2>
     <div class="stack muted">
       <?php foreach ($newsItems as $item): ?>
         <div>
@@ -74,19 +83,20 @@
     </div>
   </article>
   <article class="card">
-    <h2>ご案内</h2>
+    <h2>Focus</h2>
     <div class="stack muted">
-      <div>資料請求ページ、英語ページ、PayPal導線などの既存役割も順次整理して統合します。</div>
-      <div>文言は基本維持し、見やすさと操作性のみを大きく改善していきます。</div>
+      <div>Only one price should be visible per role.</div>
+      <div>Search and product pages should both add to the same cart.</div>
+      <div>Top page can start the special member registration flow.</div>
     </div>
   </article>
 </section>
 
 <section class="section-stack page-block">
   <div class="page-header">
-    <p class="hero__kicker">選ばれる5つの理由</p>
-    <h2 class="section-heading">当社のラジエーターが選ばれる理由</h2>
-    <p class="lead">旧トップページの訴求内容を、読みやすいレイアウトへ整理しています。</p>
+    <p class="hero__kicker">Checks</p>
+    <h2 class="section-heading">Main things to verify now</h2>
+    <p class="lead">This top page is simplified so we can focus on routing and behavior first.</p>
   </div>
   <div class="reason-grid">
     <?php foreach ($reasons as $reason): ?>

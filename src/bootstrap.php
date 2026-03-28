@@ -22,6 +22,10 @@ App\Config::boot(dirname(__DIR__));
 date_default_timezone_set('Asia/Tokyo');
 mb_internal_encoding('UTF-8');
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 function app_router(): App\Router
 {
     static $router = null;

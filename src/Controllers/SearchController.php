@@ -18,11 +18,17 @@ final class SearchController
             'mode' => trim((string) ($_GET['mode'] ?? '2')),
         ];
 
+        $hasSearched = $filters['make'] !== ''
+            || $filters['katasiki'] !== ''
+            || $filters['toc'] !== ''
+            || isset($_GET['mode']);
+
         echo render('layout', [
-            'title' => '検索結果',
+            'title' => '商品検索結果',
             'content' => render('search', [
                 'filters' => $filters,
-                'products' => $repository->search($filters),
+                'products' => $repository->search($filters, current_user()),
+                'hasSearched' => $hasSearched,
             ]),
         ]);
     }

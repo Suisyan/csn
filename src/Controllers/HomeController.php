@@ -9,39 +9,32 @@ final class HomeController
     public function index(): void
     {
         echo render('layout', [
-            'title' => 'ラジエーター交換、ラジエーター修理、ラジエーター水漏れの際は、ネット販売のパイオニア！クーリングショップドットネットへ。全品送料無料！',
+            'title' => 'Sample Test Site',
             'content' => render('home', [
-                'makes' => ['トヨタ', 'ニッサン', 'ミツビシ', 'マツダ', 'ホンダ', 'ダイハツ', 'スバル', 'スズキ'],
+                'specialEntryUrl' => '/special-member/register',
+                'makes' => ['TOYOTA', 'NISSAN', 'HONDA', 'MAZDA', 'SUBARU', 'SUZUKI', 'DAIHATSU', 'BMW'],
                 'newsItems' => [
                     [
-                        'date' => '移行中',
-                        'title' => '旧サイトの主要文言を維持したまま、UTF-8ベースへ再構成しています。',
+                        'date' => 'Now',
+                        'title' => 'Testing unified pricing and shared cart flow.',
                     ],
                     [
-                        'date' => 'テスト環境',
-                        'title' => 'umeoka.sixcore.jp での確認を前提に、表示と導線を整理しています。',
+                        'date' => 'Check',
+                        'title' => 'Verify guest, member, and special member behavior.',
                     ],
                 ],
                 'reasons' => [
                     [
-                        'title' => '最長18ヶ月の長期保証',
-                        'body' => '通常使用による水漏れ、破損に対して18ヶ月又は12ヶ月の保証を設けています。不具合が生じました際は、商品修理又は新品交換をもちまして、対応させていただきます。',
+                        'title' => 'Shared flow',
+                        'body' => 'Search, product detail, cart, and inquiry can be tested in one flow.',
                     ],
                     [
-                        'title' => '社外製新品ラジエーター',
-                        'body' => 'ラジエーター、コンデンサーに使用しております構成部品は全て新品を使用しております。品質安定及び耐久性が向上し、取付け後も安心です。',
+                        'title' => 'Pricing switch',
+                        'body' => 'Guest, member, and special member can each see only their own price.',
                     ],
                     [
-                        'title' => '車検証だけでラジエーターを検索',
-                        'body' => '検索システムは、車検証記載の型式、ミッションを入力いただくだけで、ラジエーター、コンデンサーの特定ができます。検索の手間や、品物違いを無くし、安心してご利用いただけるシステムです。',
-                    ],
-                    [
-                        'title' => '国内在庫・全品送料無料',
-                        'body' => '弊社の商品は、日本車・輸入車問わず国内にて在庫しております。発注から納品までのリードタイム短縮を実現し、全品送料無料でお届けします。',
-                    ],
-                    [
-                        'title' => '個人情報保護',
-                        'body' => 'お客様の住所、氏名、メールアドレスなどの個人情報を、第三者に譲渡したり、通常のお客さまへの販売・送付業務以外の目的で利用する事は一切ございません。',
+                        'title' => 'Special member intake',
+                        'body' => 'Special member registration is available from the top page before purchase and before login.',
                     ],
                 ],
             ]),
