@@ -1,0 +1,120 @@
+更新日: 2026-03-28
+対象: D:\Documents\csn
+ブランチ: codex/renewal-csn
+
+【概要】
+旧 coolingshop.net / .biz の分離構成を、新しい csn 側で 1 アプリ運用へ寄せる作業を進行中。
+現時点では UI よりもコードと業務フローの土台整備を優先。
+
+【ここまでの主な変更】
+1. 新サイト土台の作成
+- public_html を入口にした新構成を作成
+- UTF-8 前提に統一
+- PHP 8 系 / MySQL 5.7 を前提にした構成へ変更
+- noindex / X-Robots-Tag / robots.txt を追加
+
+2. DB 移行の準備
+- 旧バックアップ DB を umeoka_csn へ移行できるよう整形
+- 旧ダンプの互換性問題を調整して phpMyAdmin でインポート完了
+- .env に Sixcore の DB 接続情報を反映
+
+3. 認証基盤の刷新
+- acc テーブルを使い続ける方針で新認証を実装
+- 平文 pass から password_hash へ移行できるように変更
+- 初回ログイン成功時に password_hash を保存する仕組みを追加
+- member_type / biz_status / password_hash を acc に追加する SQL を作成
+- state=9 は削除相当としてログイン不可
+- 同一メールアドレスに複数履歴がある場合、state=2 優先、次に state=1 を使う認証へ変更
+
+4. 会員種別の整理
+- 非会員: ログイン不可、購入のみ可
+- 会員: 通常会員価格
+- 特別会員: 特別会員価格
+- 特別会員申請中: 状態に応じて docs_pending / pending / approved / rejected を扱う形へ拡張中
+
+5. 価格表示の統一
+- ProductRepository で非会員価格 / 会員価格 / 特別会員価格を計算
+- 検索結果、商品詳細、カートで会員状態に応じた価格だけを表示する形に変更
+
+6. カート統合
+- .net / .biz の別カートではなく、1 つの共通カートを実装
+- 検索結果と商品詳細のどちらからも同じカートへ追加可能
+- カート内でも会員状態に応じた価格が再計算される
+- 商品削除、数量変更の導線を追加
+
+7. ルーティング・基本画面
+- /search, /product/{id}, /cart, /login, /account, /special-member 系のルートを追加
+- /check.php, /health.php を追加して疎通確認できるようにした
+- トップ、検索、詳細、カート、ログイン、会員情報の基本画面を整備
+
+8. 特別会員フローの再構築
+- 旧 .biz の独立入口を廃止する方向で csn に統合中
+- 現在の新フロー:
+  a. /special-member/register または /special-member/apply で未ログイン申請
+  b. 申請時に acc を作成し、state=1, member_type=net, biz_status=docs_pending
+  c. 登録メールアドレスとパスワードでログイン
+  d. /special-member/upload で名刺画像アップロード
+  e. アップロード後に biz_status=pending
+  f. /admin/special-member または /admin/special-members で管理承認
+  g. 承認時に state=2, member_type=biz, biz_status=approved
+
+9. 特別会員申請データ
+- special_member_requests テーブルを追加
+- special_member_request_files テーブルを追加
+- 名刺画像は storage/uploads/special-member/{request_id} 配下へ保存
+
+10. 管理画面の土台
+- Basic 認証の簡易管理画面を追加
+- /admin/special-member
+- /admin/special-members
+- 承認 / 却下操作を追加
+- .env に ADMIN_USER / ADMIN_PASS を追加
+
+11. メール送信の土台
+- MailService を追加
+- 特別会員申請受付時に本人宛メール送信
+- 管理者宛通知メール送信を追加
+- 送信方式は mb_send_mail() / mail() ベース
+
+【追加した主なファイル】
+- D:\Documents\csn\src\Controllers\AccountController.php
+- D:\Documents\csn\src\Controllers\SpecialMemberController.php
+- D:\Documents\csn\src\Controllers\AdminSpecialMemberController.php
+- D:\Documents\csn\src\Repositories\CartRepository.php
+- D:\Documents\csn\src\Repositories\SpecialMemberRequestRepository.php
+- D:\Documents\csn\src\Services\MailService.php
+- D:\Documents\csn\templates\account.php
+- D:\Documents\csn\templates\special_member_apply.php
+- D:\Documents\csn\templates\special_member_upload.php
+- D:\Documents\csn\templates\admin_special_members.php
+- D:\Documents\csn\database\20260327_acc_auth_upgrade.sql
+- D:\Documents\csn\database\20260328_special_member_requests.sql
+- D:\Documents\csn\database\20260328_special_member_request_files.sql
+- D:\Documents\csn\進捗状況.txt
+
+【現在の未検証項目】
+- /special-member/register の実機動作
+- 申請時の本人宛メール送信
+- 管理者宛通知メール送信
+- /login 後の /special-member/upload 動作
+- 名刺画像アップロードの保存確認
+- /admin/special-members の Basic 認証と承認動作
+- 承認後に特別会員価格へ切り替わるか
+
+【今後の優先項目】
+1. 特別会員フローの実機検証
+2. メール送信確認
+3. 管理画面の承認動作確認
+4. カート永続化の検討
+5. 注文フロー統合
+6. ポイント処理の実装
+7. UI と日本語文言の最終整備
+
+【運用メモ】
+- 既存ファイルを修正する際は _oldN バックアップを作成済み
+- 今後は git push ごとにこのファイルへ追記する
+
+追記日: 2026-03-28
+- _old* バックアップ群を 	rash/ へ整理し、	rash/ を .gitignore に追加
+- identity と *.key を .gitignore に追加し、秘密鍵系ファイルをコミット対象から除外
+- 今回の push では、認証刷新、価格切替、共通カート、特別会員フロー、管理承認導線、進捗整理までを反映予定

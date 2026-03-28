@@ -4,6 +4,21 @@ Thumbs.db
 _notes/
 **/_notes/
 *.bak
+*_old*
+trash/
+identity
+*.key
+*.tmp
+*.temp
+*.log
+*.swp
+*.swo
+*.orig
+*.rej
+*.sql
 
 storage/*
 !storage/.gitkeep
+trash/
+identity
+*.key

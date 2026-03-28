@@ -10,27 +10,22 @@ final class InquiryController
 {
     public function show(): void
     {
+        $prefill = $this->normalizeInput($_GET);
+
         echo render('layout', [
             'title' => 'お問い合わせ',
             'content' => render('inquiry', [
                 'errors' => [],
                 'success' => false,
+                'prefill' => $prefill,
+                'fitMode' => $this->isFitMode($prefill),
             ]),
         ]);
     }
 
     public function submit(): void
     {
-        $data = [
-            'name' => trim((string) ($_POST['name'] ?? '')),
-            'email' => trim((string) ($_POST['email'] ?? '')),
-            'tel' => trim((string) ($_POST['tel'] ?? '')),
-            'category' => trim((string) ($_POST['category'] ?? '')),
-            'katasiki' => trim((string) ($_POST['katasiki'] ?? '')),
-            'parts_num' => trim((string) ($_POST['parts_num'] ?? '')),
-            'toc' => trim((string) ($_POST['toc'] ?? '')),
-            'message' => trim((string) ($_POST['message'] ?? '')),
-        ];
+        $data = $this->normalizeInput($_POST);
 
         $errors = [];
 
@@ -63,7 +58,41 @@ final class InquiryController
             'content' => render('inquiry', [
                 'errors' => $errors,
                 'success' => $success,
+                'prefill' => $data,
+                'fitMode' => $this->isFitMode($data),
             ]),
         ]);
+    }
+
+    private function normalizeInput(array $input): array
+    {
+        return [
+            'source' => trim((string) ($input['source'] ?? '')),
+            'name' => trim((string) ($input['name'] ?? '')),
+            'email' => trim((string) ($input['email'] ?? '')),
+            'tel' => trim((string) ($input['tel'] ?? '')),
+            'category' => trim((string) ($input['category'] ?? '')),
+            'katasiki' => trim((string) ($input['katasiki'] ?? '')),
+            'parts_num' => trim((string) ($input['parts_num'] ?? '')),
+            'syamei1' => trim((string) ($input['syamei1'] ?? '')),
+            'syamei2' => trim((string) ($input['syamei2'] ?? '')),
+            'toc' => trim((string) ($input['toc'] ?? '')),
+            'message' => trim((string) ($input['message'] ?? '')),
+        ];
+    }
+
+    private function isFitMode(array $data): bool
+    {
+        if (($data['source'] ?? '') === 'fit') {
+            return true;
+        }
+
+        foreach (['category', 'parts_num', 'katasiki', 'syamei1', 'syamei2', 'toc'] as $key) {
+            if (($data[$key] ?? '') !== '') {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
