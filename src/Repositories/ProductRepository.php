@@ -157,8 +157,8 @@ final class ProductRepository
         $bizStatus = (string) ($viewer['biz_status'] ?? '');
 
         $displayPrice = $guestPrice;
-        $displayLabel = '非会員価格';
-        $priceNote = '非会員向けの価格を表示しています。';
+        $displayLabel = '販売価格';
+        $priceNote = '現在の販売価格を表示しています。';
 
         if ($memberType === 'biz' && $bizStatus === 'approved') {
             $displayPrice = $specialPrice;
@@ -166,10 +166,10 @@ final class ProductRepository
             $priceNote = '特別会員向けの価格を表示しています。';
         } elseif ($memberType === 'net' || $bizStatus === 'pending') {
             $displayPrice = $memberPrice;
-            $displayLabel = '会員価格';
+            $displayLabel = '販売価格';
             $priceNote = $bizStatus === 'pending'
-                ? '特別会員申請中のため、現在は会員価格を表示しています。'
-                : '会員向けの価格を表示しています。';
+                ? '特別会員申請中のため、現在の販売価格を表示しています。'
+                : '現在の販売価格を表示しています。';
         }
 
         $product['guest_price'] = $guestPrice;

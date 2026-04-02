@@ -63,7 +63,15 @@
               <form class="cart-inline-form" action="/cart/update" method="post">
                 <label class="cart-qty">
                   数量
-                  <input type="number" name="qty[<?= e($productId) ?>]" min="0" value="<?= e((string) $line['qty']) ?>">
+                  <input
+                    type="number"
+                    name="qty[<?= e($productId) ?>]"
+                    min="0"
+                    <?php if ((int) ($line['max_qty'] ?? 0) > 0): ?>
+                      max="<?= e((string) $line['max_qty']) ?>"
+                    <?php endif; ?>
+                    value="<?= e((string) $line['qty']) ?>"
+                  >
                 </label>
                 <button type="submit" class="button">数量を更新</button>
               </form>

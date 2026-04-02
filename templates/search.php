@@ -97,6 +97,7 @@
             $stock = (int) ($product['stock'] ?? 0);
             $stockLabel = $stock > 0 ? '在庫あり' : ($stock === 0 ? 'お問い合わせ' : '要確認');
             $stockClass = $stock > 0 ? 'stock-badge stock-badge--ok' : ($stock === 0 ? 'stock-badge stock-badge--none' : 'stock-badge stock-badge--ask');
+            $requiresInquiry = $stock <= 0;
             $displayPrice = (int) ($product['display_price'] ?? 0);
             $leadTime = (string) (($product['lead_time'] ?? '') !== '' ? $product['lead_time'] : 'お問い合わせください');
             $note = (string) (($product['note'] ?? '') !== '' ? $product['note'] : '-');
@@ -188,14 +189,20 @@
                 <span><?= e($note) ?></span>
               </div>
               <div class="action-row">
-                <form action="/cart/add" method="post">
-                  <input type="hidden" name="product_id" value="<?= e((string) ($product['id'] ?? 0)) ?>">
-                  <input type="hidden" name="qty" value="1">
-                  <input type="hidden" name="redirect_to" value="<?= e($redirectTo) ?>">
-                  <button type="submit" class="button button--primary">カートに入れる</button>
-                </form>
+                <?php if ($requiresInquiry): ?>
+                  <a class="button button--primary action-row__priority" href="<?= e($inquiryHref) ?>">適合確認・問い合わせ</a>
+                <?php else: ?>
+                  <form action="/cart/add" method="post">
+                    <input type="hidden" name="product_id" value="<?= e((string) ($product['id'] ?? 0)) ?>">
+                    <input type="hidden" name="qty" value="1">
+                    <input type="hidden" name="redirect_to" value="<?= e($redirectTo) ?>">
+                    <button type="submit" class="button button--primary">カートに入れる</button>
+                  </form>
+                <?php endif; ?>
                 <a class="button" href="/product/<?= e((string) ($product['id'] ?? 0)) ?>">商品詳細</a>
-                <a class="button" href="<?= e($inquiryHref) ?>">適合確認・問い合わせ</a>
+                <?php if (!$requiresInquiry): ?>
+                  <a class="button" href="<?= e($inquiryHref) ?>">適合確認・問い合わせ</a>
+                <?php endif; ?>
               </div>
             </div>
           </article>

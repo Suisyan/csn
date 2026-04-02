@@ -24,6 +24,10 @@ final class CartController
             }
 
             $quantity = max(1, (int) $qty);
+            $availableStock = max(0, (int) ($product['stock'] ?? 0));
+            if ($availableStock > 0) {
+                $quantity = min($quantity, $availableStock);
+            }
             $unitPrice = (int) ($product['display_price'] ?? 0);
             $subtotal = $unitPrice * $quantity;
             $total += $subtotal;
@@ -31,6 +35,7 @@ final class CartController
             $lines[] = [
                 'product' => $product,
                 'qty' => $quantity,
+                'max_qty' => $availableStock,
                 'unit_price' => $unitPrice,
                 'subtotal' => $subtotal,
             ];
@@ -50,6 +55,26 @@ final class CartController
         $productId = (int) ($_POST['product_id'] ?? 0);
         $qty = max(1, (int) ($_POST['qty'] ?? 1));
         $redirectTo = (string) ($_POST['redirect_to'] ?? '/cart');
+        $product = (new ProductRepository())->findById($productId, current_user());
+
+        if ($product === null) {
+            header('Location: ' . $this->sanitizeRedirect($redirectTo));
+            exit;
+        }
+
+        $availableStock = max(0, (int) ($product['stock'] ?? 0));
+        if ($availableStock <= 0) {
+            header('Location: ' . $this->sanitizeRedirect($redirectTo));
+            exit;
+        }
+
+        $currentQty = (int) ((new CartRepository())->all()[$productId] ?? 0);
+        $qty = min($qty, max(0, $availableStock - $currentQty));
+
+        if ($qty <= 0) {
+            header('Location: ' . $this->sanitizeRedirect($redirectTo));
+            exit;
+        }
 
         (new CartRepository())->add($productId, $qty);
 
@@ -62,8 +87,26 @@ final class CartController
         $quantities = $_POST['qty'] ?? [];
         if (is_array($quantities)) {
             $cart = new CartRepository();
+            $products = new ProductRepository();
+            $viewer = current_user();
+
             foreach ($quantities as $productId => $qty) {
-                $cart->update((int) $productId, max(0, (int) $qty));
+                $productId = (int) $productId;
+                $requestedQty = max(0, (int) $qty);
+                $product = $products->findById($productId, $viewer);
+
+                if ($product === null) {
+                    $cart->remove($productId);
+                    continue;
+                }
+
+                $availableStock = max(0, (int) ($product['stock'] ?? 0));
+                if ($availableStock <= 0) {
+                    $cart->remove($productId);
+                    continue;
+                }
+
+                $cart->update($productId, min($requestedQty, $availableStock));
             }
         }
 

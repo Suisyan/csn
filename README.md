@@ -1,25 +1,34 @@
-# CSN Renewal
+# CSN リニューアル
 
-Coolingshop.net renewal workspace.
+`coolingshop.net` / `.biz` の旧構成を、`csn` 側で 1 アプリに寄せて再構築するための作業リポジトリです。
 
-## Goals
+## 目的
 
-- Keep existing copy and business meaning as much as possible
-- Unify to UTF-8
-- Target PHP 8.x and MySQL 5.7
-- Modernize UI while reducing page/file sprawl
-- Replace plaintext password handling with secure hashing
-- Make environment switching easy for `umeoka.sixcore.jp`
+- 旧サイトの文言や業務上の意味をできるだけ維持する
+- 文字コードを UTF-8 に統一する
+- PHP 8 系 / MySQL 5.7 を前提に安全な構成へ整理する
+- 画面デザインをモダンにしつつ、ファイルの分散を減らす
+- 平文パスワード依存をやめ、`password_hash()` ベースへ移行する
+- `umeoka.sixcore.jp` 環境へ切り替えやすい構成にする
 
-## Structure
+## ディレクトリ構成
 
-- `public_html/`: web root
-- `src/`: application code
-- `templates/`: layout and page templates
-- `database/`: schema and migration notes
-- `storage/`: logs and cache
+- `public_html/`: Web 公開ディレクトリ
+- `src/`: アプリケーション本体
+- `templates/`: 画面テンプレート
+- `database/`: 移行メモ、SQL、補助スクリプト
+- `storage/`: アップロードやログなどの保存先
+- `prod_picture/`: 商品画像
 
-## Notes
+## 現在の方針
 
-- This is the first migration base, not the full finished site.
-- Existing text should be migrated page by page from the legacy site.
+- 旧 `.net` / `.biz` の分離導線はできるだけ統合する
+- 検索、商品詳細、カート、会員情報、特別会員申請を共通導線へ寄せる
+- 会員 / 特別会員による価格切替はサーバ側ロジックで統一する
+- 旧 `mypages` の機能は `/account` に集約していく
+
+## 補足
+
+- このリポジトリは完成版ではなく、移行と再構築の進行中ベースです
+- 旧サイトの文言や業務仕様は、必要に応じてページ単位で移植しています
+- 作業履歴と運用メモは `進捗状況.txt` に追記して管理します

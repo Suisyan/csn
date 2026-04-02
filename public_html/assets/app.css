@@ -716,6 +716,12 @@ textarea { min-height: 140px; resize: vertical; }
   align-self: end;
 }
 
+.action-row__priority {
+  min-width: 200px;
+  justify-content: center;
+  font-weight: 800;
+}
+
 .search-result--catalog .search-result__top {
   gap: 1.25rem;
 }
@@ -1055,7 +1061,138 @@ textarea { min-height: 140px; resize: vertical; }
   width: 100%;
 }
 
+.page-header--account {
+  display: grid;
+  gap: 1rem;
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(39, 93, 122, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(39, 93, 122, 0.14), transparent 26%),
+    radial-gradient(circle at left center, rgba(191, 79, 44, 0.12), transparent 24%),
+    rgba(255, 255, 255, 0.82);
+  box-shadow: var(--shadow);
+}
+
+.account-grid,
+.account-lower-grid,
+.account-tools-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.account-grid {
+  grid-template-columns: 1.05fr 0.95fr;
+  margin-bottom: 1rem;
+}
+
+.account-tools-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 1rem;
+}
+
+.account-summary-card {
+  display: grid;
+  gap: 1rem;
+}
+
+.summary-chip-grid {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.account-action-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.account-status-list,
+.account-history-list {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.account-delivery-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.account-delivery-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(245, 249, 252, 0.94)),
+    rgba(255, 255, 255, 0.88);
+}
+
+.account-delivery-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.account-delivery-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.account-history-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem 1.05rem;
+  border-radius: 20px;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(245, 249, 252, 0.94)),
+    rgba(255, 255, 255, 0.88);
+}
+
+.account-history-card__top {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.account-empty-state {
+  display: grid;
+  gap: 0.35rem;
+  padding: 1rem 1.05rem;
+  border-radius: 18px;
+  border: 1px dashed rgba(39, 93, 122, 0.24);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.notice {
+  margin-bottom: 1rem;
+}
+
+.notice--success {
+  border-color: rgba(36, 84, 61, 0.22);
+  background:
+    linear-gradient(135deg, rgba(241, 250, 245, 0.96), rgba(255, 255, 255, 0.94)),
+    rgba(255, 255, 255, 0.88);
+}
+
+.notice--error {
+  border-color: rgba(126, 47, 47, 0.18);
+  background:
+    linear-gradient(135deg, rgba(255, 245, 245, 0.96), rgba(255, 255, 255, 0.94)),
+    rgba(255, 255, 255, 0.88);
+}
+
 @media (max-width: 960px) {
+  .account-grid,
+  .account-tools-grid,
+  .summary-chip-grid,
   .cart-overview,
   .cart-card {
     grid-template-columns: 1fr;
@@ -1063,8 +1200,16 @@ textarea { min-height: 140px; resize: vertical; }
 }
 
 @media (max-width: 720px) {
+  .account-action-row,
+  .account-delivery-actions,
   .cart-summary {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .account-action-row .button,
+  .account-delivery-actions .button,
+  .account-delivery-actions button {
+    width: 100%;
   }
 }
