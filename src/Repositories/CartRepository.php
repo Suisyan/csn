@@ -45,4 +45,9 @@ final class CartRepository
         unset($items[$productId]);
         $_SESSION[self::SESSION_KEY] = $items;
     }
+
+    public function clear(): void
+    {
+        unset($_SESSION[self::SESSION_KEY]);
+    }
 }

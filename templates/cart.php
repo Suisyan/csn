@@ -99,7 +99,8 @@
           <p class="cart-summary__total">¥<?= number_format((int) $total) ?></p>
         </div>
         <div class="cart-summary__actions">
-          <a class="button button--primary" href="/search">商品検索へ戻る</a>
+          <a class="button button--primary" href="/checkout">注文手続きへ進む</a>
+          <a class="button button--ghost" href="/search">商品検索へ戻る</a>
           <a class="button button--ghost" href="/inquiry">まとめて問い合わせる</a>
         </div>
       </div>

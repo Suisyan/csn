@@ -33,7 +33,8 @@ final class CoolpointRepository
         $statement = $pdo->prepare(
             'SELECT SUM(cp_point) AS cp_total
              FROM coolpoint
-             WHERE cp_acc_id = :acc_id'
+             WHERE cp_acc_id = :acc_id
+               AND cp_state NOT IN ("can", "del", "cancel")'
         );
         $statement->execute([':acc_id' => $userId]);
         $row = $statement->fetch();
