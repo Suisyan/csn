@@ -1,9 +1,6 @@
 <?php declare(strict_types=1); ?>
 <?php
-$requestStatus = is_array($request) ? (string) ($request['status'] ?? 'pending') : null;
-$bizStatus = (string) ($user['biz_status'] ?? 'none');
 $memberType = (string) ($user['member_type'] ?? '');
-$requestFileCount = is_array($requestFiles ?? null) ? count($requestFiles) : 0;
 $deliveryList = is_array($deliveries ?? null) ? $deliveries : [];
 $pointHistory = is_array($coolpointHistory ?? null) ? $coolpointHistory : [];
 $profileRows = [
@@ -24,7 +21,6 @@ $profileRows = [
     <p class="lead">旧 mypage の役割をこの画面に集約し、会員状態と登録情報、直近の注文状況をまとめて確認できるようにしました。</p>
     <div class="hero__signals">
       <span class="signal-pill"><?= e((string) account_label($user)) ?></span>
-      <span class="signal-pill">特別会員状態: <?= e($bizStatus) ?></span>
       <span class="signal-pill">直近注文: <?= count($purchases ?? []) ?>件</span>
     </div>
   </div>
@@ -54,10 +50,6 @@ $profileRows = [
           <strong><?= e((string) account_summary($user)) ?></strong>
         </div>
         <div class="summary-chip">
-          <span>特別会員申請</span>
-          <strong><?= e($bizStatus) ?></strong>
-        </div>
-        <div class="summary-chip">
           <span>登録メール</span>
           <strong><?= e((string) ($profile['email'] ?? '')) ?></strong>
         </div>
@@ -65,10 +57,8 @@ $profileRows = [
       <div class="account-action-row">
         <a class="button button--ghost" href="/search">商品検索へ</a>
         <a class="button button--ghost" href="/cart">カートを見る</a>
-        <?php if ($memberType === 'biz' && $bizStatus === 'approved'): ?>
+        <?php if ($memberType === 'biz'): ?>
           <a class="button button--primary" href="/search">特別会員価格で探す</a>
-        <?php elseif ($bizStatus === 'docs_pending'): ?>
-          <a class="button button--primary" href="/special-member/upload">書類アップロードへ</a>
         <?php else: ?>
           <a class="button button--primary" href="/special-member/register">特別会員申請へ</a>
         <?php endif; ?>
@@ -91,52 +81,22 @@ $profileRows = [
 
   <div class="content-grid account-lower-grid">
     <article class="detail-panel">
-      <h2>特別会員ステータス</h2>
-      <?php if ($memberType === 'biz' && $bizStatus === 'approved'): ?>
-        <p class="muted">特別会員価格が有効です。承認済みアカウントとしてログインされています。</p>
-      <?php elseif ($bizStatus === 'docs_pending'): ?>
-        <p class="muted">申請受付済みです。ログイン後に名刺画像アップロードを完了してください。</p>
-        <p><a class="button button--primary" href="/special-member/upload">名刺画像アップロードへ進む</a></p>
-      <?php elseif ($bizStatus === 'pending'): ?>
-        <p class="muted">特別会員申請を受付中です。管理承認待ちです。</p>
-        <?php if (is_array($request)): ?>
-          <p class="muted">最新申請: <?= e((string) ($request['requested_at'] ?? '')) ?> / status <?= e($requestStatus) ?></p>
-        <?php endif; ?>
-      <?php elseif ($bizStatus === 'rejected'): ?>
-        <p class="muted">直近の申請は却下されました。必要なら再申請してください。</p>
-        <p><a class="button button--primary" href="/special-member/register">特別会員申請へ進む</a></p>
-      <?php else: ?>
-        <p class="muted">旧 .biz ではなく、この共通アプリ内から特別会員申請を受け付けます。</p>
-        <p><a class="button button--primary" href="/special-member/register">特別会員申請へ進む</a></p>
-      <?php endif; ?>
-
-      <?php if (is_array($request)): ?>
-        <div class="account-status-list">
-          <div class="detail-meta__item"><strong>申請日時</strong><span><?= e((string) ($request['requested_at'] ?? '未登録')) ?></span></div>
-          <div class="detail-meta__item"><strong>申請ステータス</strong><span><?= e($requestStatus ?? 'pending') ?></span></div>
-          <div class="detail-meta__item"><strong>添付書類</strong><span><?= e((string) $requestFileCount) ?>件</span></div>
-          <div class="detail-meta__item"><strong>事業種別</strong><span><?= e((string) ($request['business_type'] ?? '未登録')) ?></span></div>
-        </div>
-      <?php endif; ?>
-    </article>
-
-    <article class="detail-panel">
       <h2>直近の購入履歴</h2>
       <p class="muted">旧 mypage の購入履歴を引き継ぐ形で、最新の注文を最大10件まで表示します。</p>
       <?php if (!empty($purchases)): ?>
-        <div class="account-history-list">
+        <div class="account-list">
           <?php foreach ($purchases as $purchase): ?>
-            <article class="account-history-card">
-              <div class="account-history-card__top">
+            <div class="account-list__row">
+              <div class="account-list__main">
                 <strong>注文番号 <?= e((string) ($purchase['order_id'] ?? '')) ?></strong>
+                <span class="account-list__meta"><?= e((string) ($purchase['ordered_at_label'] ?? '')) ?></span>
+              </div>
+              <div class="account-list__sub">
+                <span>¥<?= number_format((int) ($purchase['total_amount'] ?? 0)) ?></span>
+                <span><?= e((string) ($purchase['payment_label'] ?? '')) ?></span>
                 <span class="pill"><?= e((string) ($purchase['shipment_label'] ?? '')) ?></span>
               </div>
-              <div class="detail-meta">
-                <div class="detail-meta__item"><strong>注文日時</strong><span><?= e((string) ($purchase['ordered_at_label'] ?? '')) ?></span></div>
-                <div class="detail-meta__item"><strong>合計金額</strong><span>¥<?= number_format((int) ($purchase['total_amount'] ?? 0)) ?></span></div>
-                <div class="detail-meta__item"><strong>お支払い方法</strong><span><?= e((string) ($purchase['payment_label'] ?? '')) ?></span></div>
-              </div>
-            </article>
+            </div>
           <?php endforeach; ?>
         </div>
       <?php else: ?>
@@ -249,18 +209,18 @@ $profileRows = [
         </div>
 
         <?php if (!empty($pointHistory)): ?>
-          <div class="account-history-list">
+          <div class="account-list">
             <?php foreach ($pointHistory as $point): ?>
-              <article class="account-history-card">
-                <div class="account-history-card__top">
+              <div class="account-list__row">
+                <div class="account-list__main">
                   <strong><?= e((string) ($point['cp_date'] ?? '')) ?></strong>
+                  <span class="account-list__meta">注文番号 <?= e((string) (($point['cp_s_id'] ?? 0) !== 0 ? $point['cp_s_id'] : 'なし')) ?></span>
+                </div>
+                <div class="account-list__sub">
+                  <span><?= number_format((int) ($point['cp_point'] ?? 0)) ?> pt</span>
                   <span class="pill"><?= e((string) ($point['state_label'] ?? '')) ?></span>
                 </div>
-                <div class="detail-meta">
-                  <div class="detail-meta__item"><strong>ポイント</strong><span><?= number_format((int) ($point['cp_point'] ?? 0)) ?> pt</span></div>
-                  <div class="detail-meta__item"><strong>注文番号</strong><span><?= e((string) (($point['cp_s_id'] ?? 0) !== 0 ? $point['cp_s_id'] : 'なし')) ?></span></div>
-                </div>
-              </article>
+              </div>
             <?php endforeach; ?>
           </div>
         <?php else: ?>

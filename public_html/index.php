@@ -6,9 +6,11 @@ use App\Controllers\AccountController;
 use App\Controllers\AdminSpecialMemberController;
 use App\Controllers\AuthController;
 use App\Controllers\CartController;
+use App\Controllers\CheckoutController;
 use App\Controllers\HomeController;
 use App\Controllers\InquiryController;
 use App\Controllers\ProductController;
+use App\Controllers\PayPalExpressController;
 use App\Controllers\SearchController;
 use App\Controllers\SpecialMemberController;
 
@@ -46,6 +48,14 @@ try {
     $router->post('/cart/add', [CartController::class, 'add']);
     $router->post('/cart/update', [CartController::class, 'update']);
     $router->post('/cart/remove', [CartController::class, 'remove']);
+    $router->get('/checkout', [CheckoutController::class, 'show']);
+    $router->post('/checkout/confirm', [CheckoutController::class, 'confirm']);
+    $router->post('/checkout/complete', [CheckoutController::class, 'complete']);
+    $router->get('/cart/expresscheckout2.php', [PayPalExpressController::class, 'start']);
+    $router->get('/cart/pp_confirm2.php', [PayPalExpressController::class, 'review']);
+    $router->get('/thanks_pp.php', [PayPalExpressController::class, 'complete']);
+    $router->post('/thanks_pp.php', [PayPalExpressController::class, 'complete']);
+    $router->get('/pp_cancel.php', [PayPalExpressController::class, 'cancel']);
 
     $router->dispatch($_SERVER['REQUEST_METHOD'] ?? 'GET', current_path());
 } catch (Throwable $e) {

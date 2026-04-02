@@ -133,3 +133,30 @@
 
 追記日: 2026-04-02
 - README.md を日本語化し、現在の移行方針とディレクトリ構成、運用方針が分かる内容へ整理
+
+追記日: 2026-04-02
+- README.md に、旧文言をできるだけ維持して先に構築する方針、古いコードや SQL を安全な実装へ置き換える方針、重複コードを集約してファイル数を減らす方針を追記
+- 今後のリニューアル作業は README の方針に沿って進め、不明点は確認してから進める運用を明記
+
+追記日: 2026-04-02
+- 旧 cart/checkout.php, confirm.php, finish.php を参考に、共通カートからの注文手続きフローを新構成へ追加
+- /checkout, /checkout/confirm, /checkout/complete の導線を追加し、購入者情報 / お届け先 / 支払方法 / 確認 / 完了までを 1 アプリ内に統合
+- sales_master / sales_sub へ注文データを書き込む OrderRepository を追加し、注文確定時に在庫減算まで行う形に変更
+- PayPal はサイト内直接決済ではなく、注文完了メールに記載する URL から支払う旧方式に合わせた案内を実装
+- .env.example に PayPal URL テンプレート、送料、代引手数料の設定例を追加
+
+追記日: 2026-04-02
+- 旧 /cart/expresscheckout2.php, /cart/pp_confirm2.php, /thanks_pp.php, /pp_cancel.php に相当する PayPal Express Checkout 導線を新アプリへ追加
+- PayPal API 呼び出しを新しい PayPalExpressService に集約し、SetExpressCheckout / 詳細取得 / 決済確定を PHP 8 系のコードで実装
+- sales_master の token / paypal_state / trance_id 更新と、PayPal キャンセル時の在庫戻しを OrderRepository 側へ集約
+- 注文完了画面と注文メールから、新しい Express Checkout URL へ進めるように変更
+
+追記日: 2026-04-02
+- 会員 1% / 特別会員 2% のクールポイント加算を、注文完了処理へ追加
+- チェックアウト画面でクールポイント利用数を入力できるようにし、注文確認・完了画面に利用分と加算予定を表示
+- 注文保存時に `coolpoint` テーブルへ `minus / plus` を記録し、`sales_sub` へポイント値引き行 `999999` を追加
+- PayPal キャンセル時は注文紐づきのクールポイントを `cancel` 扱いにして残高へ影響しないように変更
+
+追記日: 2026-04-02
+- /account から「特別会員ステータス」の独立表示を外し、マイページ上の情報量を整理
+- 購入履歴とクールポイント実績はカード型ではなく一覧リスト型に変更し、見通しを改善
