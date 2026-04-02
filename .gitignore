@@ -16,6 +16,8 @@ identity
 *.orig
 *.rej
 *.sql
+.codex
+.codex/
 
 storage/*
 !storage/.gitkeep
