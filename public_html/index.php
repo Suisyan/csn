@@ -28,6 +28,8 @@ try {
     $router->post('/login', [AuthController::class, 'login']);
     $router->post('/logout', [AuthController::class, 'logout']);
     $router->get('/account', [AccountController::class, 'show']);
+    $router->post('/account/delivery/save', [AccountController::class, 'saveDelivery']);
+    $router->post('/account/delivery/{id}/delete', [AccountController::class, 'deleteDelivery']);
     $router->get('/special-member/apply', [SpecialMemberController::class, 'showRegister']);
     $router->post('/special-member/apply', [SpecialMemberController::class, 'submitRegister']);
     $router->get('/special-member/register', [SpecialMemberController::class, 'showRegister']);

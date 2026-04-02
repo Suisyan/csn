@@ -5,12 +5,13 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Repositories\InquiryRepository;
+use App\Repositories\UserRepository;
 
 final class InquiryController
 {
     public function show(): void
     {
-        $prefill = $this->normalizeInput($_GET);
+        $prefill = $this->applyUserPrefill($this->normalizeInput($_GET));
 
         echo render('layout', [
             'title' => 'お問い合わせ',
@@ -25,7 +26,7 @@ final class InquiryController
 
     public function submit(): void
     {
-        $data = $this->normalizeInput($_POST);
+        $data = $this->applyUserPrefill($this->normalizeInput($_POST));
 
         $errors = [];
 
@@ -94,5 +95,32 @@ final class InquiryController
         }
 
         return false;
+    }
+
+    private function applyUserPrefill(array $data): array
+    {
+        $currentUser = current_user();
+        if (!is_array($currentUser)) {
+            return $data;
+        }
+
+        $profile = (new UserRepository())->findById((int) ($currentUser['id'] ?? 0));
+        if (!is_array($profile)) {
+            return $data;
+        }
+
+        if (($data['name'] ?? '') === '') {
+            $data['name'] = trim((string) ($profile['u_name'] ?? $profile['name'] ?? ''));
+        }
+
+        if (($data['email'] ?? '') === '') {
+            $data['email'] = trim((string) ($profile['email'] ?? ''));
+        }
+
+        if (($data['tel'] ?? '') === '') {
+            $data['tel'] = trim((string) ($profile['tel'] ?? ''));
+        }
+
+        return $data;
     }
 }

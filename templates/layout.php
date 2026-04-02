@@ -16,7 +16,7 @@ $accountHref = $currentUser === null ? '/login' : '/account';
   <title><?= e($title ?? config('APP_NAME', 'Sample Test Site')) ?></title>
   <meta name="description" content="Sample test site for search, member state, and cart flow.">
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <link rel="stylesheet" href="/assets/app.css?v=20260328-cartclear1">
+  <link rel="stylesheet" href="/assets/app.css?v=20260402-searchstock1">
 </head>
 <body>
   <div class="site-shell">
