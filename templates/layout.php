@@ -16,28 +16,35 @@ $accountHref = $currentUser === null ? '/login' : '/account';
   <title><?= e($title ?? config('APP_NAME', 'Sample Test Site')) ?></title>
   <meta name="description" content="Sample test site for search, member state, and cart flow.">
   <meta name="robots" content="noindex, nofollow, noarchive">
-  <link rel="stylesheet" href="/assets/app.css?v=20260402-accountlist1">
+  <link rel="stylesheet" href="/assets/app.css?v=20260403-v0hero1">
 </head>
 <body>
   <div class="site-shell">
     <header class="site-header">
       <div class="site-header__inner">
-        <a class="brand" href="/">
-          <span class="brand__eyebrow">Sample Test</span>
-          <span class="brand__name">Sample Test Site</span>
+        <a class="brand brand--shop" href="/">
+          <span class="brand__eyebrow">Radiator Shop</span>
+          <span class="brand__name">ラジエーターショップ</span>
         </a>
-        <nav class="nav">
-          <a href="/">Home</a>
-          <a href="/search">Search</a>
+        <nav class="nav nav--header">
+          <a href="/">ホーム</a>
+          <a href="/search">商品検索</a>
           <a href="/cart"><?= e($cartLabel) ?></a>
-          <a href="/inquiry">Inquiry</a>
-          <a href="<?= e($accountHref) ?>"><?= $currentUser === null ? 'Login' : 'Account' ?></a>
+          <a href="/inquiry">お問い合わせ</a>
+          <a href="<?= e($accountHref) ?>"><?= $currentUser === null ? 'ログイン' : 'アカウント' ?></a>
           <?php if ($currentUser !== null): ?>
             <form class="nav-logout" action="/logout" method="post">
-              <button type="submit">Logout</button>
+              <button type="submit">ログアウト</button>
             </form>
           <?php endif; ?>
         </nav>
+      </div>
+      <div class="site-header__inner site-header__inner--sub">
+        <a class="brand brand--sub" href="/">
+          <span class="brand__eyebrow">Sample Test</span>
+          <span class="brand__name">Sample Test Site</span>
+        </a>
+        <p class="site-header__note">検索・価格・カート導線の確認用サイト</p>
       </div>
       <div class="site-status-bar site-status-bar--<?= e($accountTheme) ?>">
         <div class="site-status-bar__inner">
