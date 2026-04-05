@@ -11,7 +11,7 @@ final class AdminSpecialMemberController
 {
     public function index(): void
     {
-        $this->requireAdmin();
+        require_admin_login();
 
         $repository = new SpecialMemberRequestRepository();
         $requests = $repository->listRecent();
@@ -21,19 +21,31 @@ final class AdminSpecialMemberController
         unset($request);
 
         echo render('layout', [
-            'title' => 'Special Member Admin',
+            'title' => '特別会員申請管理',
             'content' => render('admin_special_members', [
                 'requests' => $requests,
+                'pageTitle' => '特別会員申請管理',
+                'pageLead' => '申請内容、名刺画像の有無、承認状態を確認します。',
             ]),
         ]);
     }
 
-    public function review(): void
+    public function approve(array $params = []): void
     {
-        $this->requireAdmin();
+        require_admin_login();
 
-        $requestId = (int) ($_POST['request_id'] ?? 0);
-        $action = (string) ($_POST['action'] ?? '');
+        $this->handleReview((int) ($params['id'] ?? 0), 'approve');
+    }
+
+    public function reject(array $params = []): void
+    {
+        require_admin_login();
+
+        $this->handleReview((int) ($params['id'] ?? 0), 'reject');
+    }
+
+    private function handleReview(int $requestId, string $action): void
+    {
         $repository = new SpecialMemberRequestRepository();
         $request = $repository->findById($requestId);
 
@@ -52,25 +64,5 @@ final class AdminSpecialMemberController
 
         header('Location: /admin/special-members');
         exit;
-    }
-
-    private function requireAdmin(): void
-    {
-        $expectedUser = (string) config('ADMIN_USER', '');
-        $expectedPass = (string) config('ADMIN_PASS', '');
-
-        if ($expectedUser === '' || $expectedPass === '') {
-            header('HTTP/1.0 500 Internal Server Error');
-            exit('Admin credentials are not configured.');
-        }
-
-        $user = (string) ($_SERVER['PHP_AUTH_USER'] ?? '');
-        $pass = (string) ($_SERVER['PHP_AUTH_PW'] ?? '');
-
-        if (!hash_equals($expectedUser, $user) || !hash_equals($expectedPass, $pass)) {
-            header('WWW-Authenticate: Basic realm="Special Member Admin"');
-            header('HTTP/1.0 401 Unauthorized');
-            exit('Unauthorized');
-        }
     }
 }

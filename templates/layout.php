@@ -1,5 +1,7 @@
 <?php declare(strict_types=1); ?>
 <?php
+$isAdminPage = str_starts_with((string) current_path(), '/admin');
+$isAdminShell = $isAdminPage && current_path() !== '/admin/login';
 $currentUser = function_exists('current_user') ? current_user() : null;
 $cartCount = function_exists('cart_count') ? cart_count() : 0;
 $cartLabel = $cartCount > 0 ? 'Cart (' . $cartCount . ')' : 'Cart';
@@ -19,16 +21,23 @@ $accountHref = $currentUser === null ? '/login' : '/account';
   <link rel="stylesheet" href="/assets/app.css?v=20260403-v0near100">
 </head>
 <body>
+  <?php if ($isAdminShell): ?>
+    <?= render('admin_shell', ['content' => $content ?? '']) ?>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>
+    <?php return; ?>
+  <?php endif; ?>
   <div class="flex min-h-screen flex-col">
     <header class="sticky top-0 z-50 border-b border-border bg-card">
       <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-8">
-        <a href="/" class="flex flex-col text-decoration-none">
+        <a href="<?= e(storefront_home_url()) ?>" class="flex flex-col text-decoration-none">
           <span class="text-xs uppercase tracking-widest text-muted-foreground">Radiator Shop</span>
           <span class="text-lg font-semibold tracking-tight">ラジエーターショップ</span>
         </a>
 
         <nav class="hidden items-center gap-8 md:flex">
-          <a href="/" class="text-sm font-medium text-foreground transition-colors hover:text-muted-foreground">ホーム</a>
+          <a href="<?= e(storefront_home_url()) ?>" class="text-sm font-medium text-foreground transition-colors hover:text-muted-foreground">ホーム</a>
           <a href="/search" class="text-sm font-medium text-foreground transition-colors hover:text-muted-foreground">商品検索</a>
           <a href="/cart" class="text-sm font-medium text-foreground transition-colors hover:text-muted-foreground">カート</a>
           <a href="/inquiry" class="text-sm font-medium text-foreground transition-colors hover:text-muted-foreground">お問い合わせ</a>
@@ -73,7 +82,7 @@ $accountHref = $currentUser === null ? '/login' : '/account';
       <div class="mx-auto max-w-7xl px-4 py-12 lg:px-8">
         <div class="grid grid-cols-1 gap-8 md:grid-cols-4">
           <div class="md:col-span-2">
-            <a href="/" class="flex flex-col text-decoration-none">
+            <a href="<?= e(storefront_home_url()) ?>" class="flex flex-col text-decoration-none">
               <span class="text-xs uppercase tracking-widest text-muted-foreground">Radiator Shop</span>
               <span class="text-lg font-semibold tracking-tight">ラジエーターショップ</span>
             </a>

@@ -20,7 +20,11 @@ function current_path(): string
     $uri = $_SERVER['REQUEST_URI'] ?? '/';
     $path = (string) parse_url($uri, PHP_URL_PATH);
 
-    return $path === '' ? '/' : $path;
+    if ($path === '' || $path === '/') {
+        return '/';
+    }
+
+    return rtrim($path, '/');
 }
 
 function e(mixed $value): string
@@ -54,6 +58,30 @@ function require_login(): array
 function refresh_current_user(array $user): void
 {
     $_SESSION['auth_user'] = $user;
+}
+
+function current_admin(): ?array
+{
+    $admin = $_SESSION['admin_auth'] ?? null;
+
+    return is_array($admin) ? $admin : null;
+}
+
+function require_admin_login(): array
+{
+    $admin = current_admin();
+    if ($admin === null) {
+        $redirect = current_path();
+        header('Location: /admin/login?redirect=' . urlencode($redirect));
+        exit;
+    }
+
+    return $admin;
+}
+
+function storefront_home_url(): string
+{
+    return '/ra.php';
 }
 
 function account_label(?array $user): string

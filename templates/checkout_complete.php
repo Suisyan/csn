@@ -49,7 +49,7 @@
 
     <div class="action-row">
       <a class="button button--primary" href="/search">商品検索へ戻る</a>
-      <a class="button button--ghost" href="/">トップへ戻る</a>
+      <a class="button button--ghost" href="<?= e(storefront_home_url()) ?>">トップへ戻る</a>
     </div>
   </div>
 </section>
