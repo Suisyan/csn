@@ -9,6 +9,57 @@ use PDO;
 
 final class SpecialMemberRequestRepository
 {
+    public function countByStatuses(array $statuses): int
+    {
+        $pdo = Database::connection();
+        if (!$pdo instanceof PDO || $statuses === []) {
+            return 0;
+        }
+
+        $placeholders = [];
+        $params = [];
+        foreach (array_values($statuses) as $index => $status) {
+            $placeholder = ':status_' . $index;
+            $placeholders[] = $placeholder;
+            $params[$placeholder] = $status;
+        }
+
+        $statement = $pdo->prepare(
+            'SELECT COUNT(*) FROM special_member_requests WHERE status IN (' . implode(', ', $placeholders) . ')'
+        );
+        $statement->execute($params);
+
+        return (int) $statement->fetchColumn();
+    }
+
+    public function listByStatuses(array $statuses, int $limit = 10): array
+    {
+        $pdo = Database::connection();
+        if (!$pdo instanceof PDO || $statuses === []) {
+            return [];
+        }
+
+        $limit = max(1, min($limit, 50));
+        $placeholders = [];
+        foreach (array_values($statuses) as $index => $status) {
+            $placeholders[':status_' . $index] = $status;
+        }
+
+        $statement = $pdo->prepare(
+            'SELECT * FROM special_member_requests
+             WHERE status IN (' . implode(', ', array_keys($placeholders)) . ')
+             ORDER BY id DESC
+             LIMIT :limit'
+        );
+        foreach ($placeholders as $placeholder => $status) {
+            $statement->bindValue($placeholder, $status, PDO::PARAM_STR);
+        }
+        $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $statement->execute();
+
+        return $statement->fetchAll() ?: [];
+    }
+
     public function create(int $userId, array $data, string $status = 'docs_pending'): ?int
     {
         $pdo = Database::connection();

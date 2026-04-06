@@ -8,6 +8,7 @@ $cartLabel = $cartCount > 0 ? 'Cart (' . $cartCount . ')' : 'Cart';
 $accountTheme = function_exists('account_theme') ? account_theme($currentUser) : 'guest';
 $accountLabel = function_exists('account_label') ? account_label($currentUser) : 'Guest';
 $accountSummary = function_exists('account_summary') ? account_summary($currentUser) : 'Member helpers not loaded yet.';
+$accountSummaryHtml = function_exists('account_summary_html') ? account_summary_html($currentUser) : e($accountSummary);
 $accountHref = $currentUser === null ? '/login' : '/account';
 ?>
 <!doctype html>
@@ -68,7 +69,7 @@ $accountHref = $currentUser === null ? '/login' : '/account';
             <?php if (is_array($currentUser)): ?>
               <?= e((string) ($currentUser['name'] ?? $currentUser['email'] ?? '')) ?> /
             <?php endif; ?>
-            <?= e($accountSummary) ?>
+            <?= $accountSummaryHtml ?>
           </span>
         </div>
       </div>

@@ -1,6 +1,7 @@
 <?php declare(strict_types=1); ?>
 <?php
 $memberType = (string) ($user['member_type'] ?? '');
+$bizStatus = (string) ($user['biz_status'] ?? '');
 $deliveryList = is_array($deliveries ?? null) ? $deliveries : [];
 $pointHistory = is_array($coolpointHistory ?? null) ? $coolpointHistory : [];
 $profileRows = [
@@ -46,8 +47,8 @@ $profileRows = [
           <strong><?= e((string) account_label($user)) ?></strong>
         </div>
         <div class="summary-chip">
-          <span>価格状態</span>
-          <strong><?= e((string) account_summary($user)) ?></strong>
+          <span>特別会員状態</span>
+          <strong><?= e((string) account_special_status($user)) ?></strong>
         </div>
         <div class="summary-chip">
           <span>登録メール</span>
@@ -57,9 +58,11 @@ $profileRows = [
       <div class="account-action-row">
         <a class="button button--ghost" href="/search">商品検索へ</a>
         <a class="button button--ghost" href="/cart">カートを見る</a>
-        <?php if ($memberType === 'biz'): ?>
+        <?php if ($memberType === 'biz' && $bizStatus === 'approved'): ?>
           <a class="button button--primary" href="/search">特別会員価格で探す</a>
-        <?php else: ?>
+        <?php elseif (in_array($bizStatus, ['docs_pending', 'rejected'], true)): ?>
+          <a class="button button--primary" href="/special-member/upload">名刺画像をアップロード</a>
+        <?php elseif ($bizStatus !== 'pending'): ?>
           <a class="button button--primary" href="/special-member/register">特別会員申請へ</a>
         <?php endif; ?>
       </div>

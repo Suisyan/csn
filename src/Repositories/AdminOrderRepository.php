@@ -32,6 +32,21 @@ final class AdminOrderRepository
         return $this->listByStatus('pending', $limit);
     }
 
+    public function listRecent(int $limit = 20): array
+    {
+        return $this->listByStatus('recent', $limit);
+    }
+
+    public function countRecent(): int
+    {
+        return $this->countByStatus('recent');
+    }
+
+    public function listRecentPage(int $page, int $perPage = 20): array
+    {
+        return $this->listByStatus('recent', $perPage, $this->offsetForPage($page, $perPage));
+    }
+
     public function findOrderDetail(int $orderId): ?array
     {
         $pdo = Database::connection();
@@ -129,7 +144,7 @@ final class AdminOrderRepository
         return is_array($row) ? $row : null;
     }
 
-    private function listByStatus(string $status, int $limit): array
+    private function listByStatus(string $status, int $limit, int $offset = 0): array
     {
         $pdo = Database::connection();
         if (!$pdo instanceof PDO || !$this->canReadOrders()) {
@@ -137,9 +152,11 @@ final class AdminOrderRepository
         }
 
         $limit = max(1, min($limit, 50));
+        $offset = max(0, $offset);
 
         $where = match ($status) {
             'pending' => "WHERE COALESCE(sales_master.mail_flag, '') = '0'",
+            'recent' => '',
             default => "WHERE COALESCE(sales_master.mail_flag, '') <> '9'",
         };
 
@@ -168,16 +185,43 @@ final class AdminOrderRepository
             ) AS totals ON totals.s_id = sales_master.s_id
             {$where}
             ORDER BY sales_master.s_date DESC, sales_master.s_id DESC
-            LIMIT :limit
+            LIMIT :offset, :limit
         SQL;
 
         $statement = $pdo->prepare($sql);
+        $statement->bindValue(':offset', $offset, PDO::PARAM_INT);
         $statement->bindValue(':limit', $limit, PDO::PARAM_INT);
         $statement->execute();
 
         $rows = $statement->fetchAll() ?: [];
 
         return array_map(fn (array $row): array => $this->decorateRow($row), $rows);
+    }
+
+    private function countByStatus(string $status): int
+    {
+        $pdo = Database::connection();
+        if (!$pdo instanceof PDO || !$this->canReadOrders()) {
+            return 0;
+        }
+
+        $where = match ($status) {
+            'pending' => "WHERE COALESCE(mail_flag, '') = '0'",
+            'recent' => '',
+            default => "WHERE COALESCE(mail_flag, '') <> '9'",
+        };
+
+        $statement = $pdo->query("SELECT COUNT(*) FROM sales_master {$where}");
+
+        return (int) $statement->fetchColumn();
+    }
+
+    private function offsetForPage(int $page, int $perPage): int
+    {
+        $page = max(1, $page);
+        $perPage = max(1, $perPage);
+
+        return ($page - 1) * $perPage;
     }
 
     private function decorateRow(array $row): array

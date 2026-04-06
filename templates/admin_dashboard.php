@@ -61,6 +61,57 @@
     </div>
   </div>
 
+  <div class="admin-panel">
+    <div class="admin-panel__header">
+      <div>
+        <p class="admin-page__eyebrow">Special Members</p>
+        <h2 class="admin-panel__title">特別会員の申請保留</h2>
+      </div>
+      <div class="admin-panel__meta">
+        <strong><?= number_format((int) ($specialPendingCount ?? 0)) ?></strong>
+        <span>件</span>
+      </div>
+    </div>
+
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>申請ID</th>
+            <th>会社名 / 担当者</th>
+            <th>Email</th>
+            <th>状態</th>
+            <th>申請日時</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (($specialPendingRequests ?? []) === []): ?>
+            <tr>
+              <td colspan="5">現在、保留中の特別会員申請はありません。</td>
+            </tr>
+          <?php else: ?>
+            <?php foreach (($specialPendingRequests ?? []) as $request): ?>
+              <tr>
+                <td><?= e((string) ($request['id'] ?? '')) ?></td>
+                <td>
+                  <?= e((string) ($request['company_name'] ?? '')) ?><br>
+                  <span><?= e((string) ($request['contact_name'] ?? '')) ?></span>
+                </td>
+                <td><?= e((string) ($request['email'] ?? '-')) ?></td>
+                <td><?= e(special_member_status_label((string) ($request['status'] ?? ''))) ?></td>
+                <td><?= e((string) ($request['requested_at'] ?? '-')) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-panel__footer">
+      <a href="/admin/special-members" class="v0-button v0-button--outline">申請一覧を見る</a>
+    </div>
+  </div>
+
   <div class="admin-grid">
     <article class="admin-card">
       <h2>受注管理</h2>
@@ -70,7 +121,7 @@
     <article class="admin-card">
       <h2>商品管理</h2>
       <p>商品・型式・OEM・画像アップロードを旧管理画面に近い並びで整理します。</p>
-      <span class="admin-card__status">続いて着手</span>
+      <a href="/admin/products" class="v0-button v0-button--outline">商品管理を開く</a>
     </article>
     <article class="admin-card">
       <h2>特別会員申請</h2>

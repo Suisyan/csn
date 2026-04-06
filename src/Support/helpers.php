@@ -84,6 +84,37 @@ function storefront_home_url(): string
     return '/ra.php';
 }
 
+function special_member_status_label(string $status): string
+{
+    return match ($status) {
+        'docs_pending' => '名刺アップ待',
+        'pending' => '申請中',
+        'approved' => '承認',
+        'rejected' => '却下',
+        default => $status !== '' ? $status : '未申請',
+    };
+}
+
+function account_special_status(?array $user): string
+{
+    if ($user === null) {
+        return '未申請';
+    }
+
+    $memberType = (string) ($user['member_type'] ?? '');
+    $bizStatus = (string) ($user['biz_status'] ?? '');
+
+    if ($memberType === 'biz' && $bizStatus === 'approved') {
+        return special_member_status_label('approved');
+    }
+
+    if (in_array($bizStatus, ['docs_pending', 'pending', 'rejected'], true)) {
+        return special_member_status_label($bizStatus);
+    }
+
+    return '未申請';
+}
+
 function account_label(?array $user): string
 {
     if ($user === null) {
@@ -146,20 +177,48 @@ function account_summary(?array $user): string
     $bizStatus = (string) ($user['biz_status'] ?? '');
 
     if ($memberType === 'biz' && $bizStatus === 'approved') {
-        return '特別会員価格が有効です。';
+        return '特別会員状態: 承認。特別会員価格が有効です。';
     }
 
     if ($bizStatus === 'docs_pending') {
-        return '申請受付済みです。ログイン後に名刺画像をアップロードしてください。';
+        return '特別会員状態: 名刺アップ待。ログイン後に名刺画像をアップロードしてください。';
     }
 
     if ($bizStatus === 'pending') {
-        return '特別会員申請を受付中です。審査待ちです。';
+        return '特別会員状態: 申請中。審査待ちです。';
+    }
+
+    if ($bizStatus === 'rejected') {
+        return '特別会員状態: 却下。名刺画像を再アップロードしてください。';
     }
 
     if ($memberType === 'net') {
-        return '会員価格が有効です。特別会員申請を行えます。';
+        return '特別会員状態: 未申請。会員価格が有効です。必要に応じて特別会員申請を行えます。';
     }
 
     return '非会員購入は利用できますが、ログインは会員アカウントのみです。';
+}
+
+function account_summary_html(?array $user): string
+{
+    if ($user === null) {
+        return e(account_summary($user));
+    }
+
+    $memberType = (string) ($user['member_type'] ?? '');
+    $bizStatus = (string) ($user['biz_status'] ?? '');
+
+    if ($memberType === 'biz' && $bizStatus === 'approved') {
+        return e('特別会員状態: 承認。特別会員価格が有効です。');
+    }
+
+    if ($bizStatus === 'docs_pending') {
+        return '特別会員状態: 名刺アップ待。ログイン後に<a href="/special-member/upload">名刺画像をアップロードしてください</a>。';
+    }
+
+    if ($bizStatus === 'rejected') {
+        return '特別会員状態: 却下。<a href="/special-member/upload">名刺画像を再アップロードしてください</a>。';
+    }
+
+    return e(account_summary($user));
 }

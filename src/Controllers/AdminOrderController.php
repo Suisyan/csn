@@ -20,13 +20,21 @@ final class AdminOrderController
         }
 
         $repository = new AdminOrderRepository();
+        $perPage = 20;
+        $page = max(1, (int) ($_GET['page'] ?? 1));
+        $totalOrders = $repository->countRecent();
+        $totalPages = max(1, (int) ceil($totalOrders / $perPage));
+        $page = min($page, $totalPages);
 
         echo render('layout', [
             'title' => '受注管理',
             'content' => render('admin_orders', [
                 'pageTitle' => '受注管理',
-                'pageLead' => '旧管理画面に近い並びで、未完了の受注を優先表示しています。',
-                'pendingOrders' => $repository->listPending(30),
+                'pageLead' => '受注を 20 件ずつ表示し、未完了と完了が分かる形で確認できます。',
+                'orders' => $repository->listRecentPage($page, $perPage),
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'totalOrders' => $totalOrders,
             ]),
         ]);
     }

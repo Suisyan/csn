@@ -81,6 +81,53 @@ final class CoolpointRepository
             && $this->hasColumn('cp_date');
     }
 
+    public function hasSpecialMemberApprovalBonus(int $userId): bool
+    {
+        $pdo = Database::connection();
+        if (!$pdo instanceof PDO || !$this->isAvailable()) {
+            return false;
+        }
+
+        $statement = $pdo->prepare(
+            'SELECT COUNT(*)
+             FROM coolpoint
+             WHERE cp_acc_id = :acc_id
+               AND cp_state = :cp_state'
+        );
+        $statement->execute([
+            ':acc_id' => $userId,
+            ':cp_state' => 'bonus',
+        ]);
+
+        return (int) $statement->fetchColumn() > 0;
+    }
+
+    public function grantSpecialMemberApprovalBonus(int $userId, int $points): bool
+    {
+        $pdo = Database::connection();
+        if (!$pdo instanceof PDO
+            || !$this->isAvailable()
+            || !$this->hasColumn('cp_s_id')
+            || $userId <= 0
+            || $points <= 0
+        ) {
+            return false;
+        }
+
+        $statement = $pdo->prepare(
+            'INSERT INTO coolpoint (cp_s_id, cp_acc_id, cp_point, cp_date, cp_state)
+             VALUES (:cp_s_id, :cp_acc_id, :cp_point, :cp_date, :cp_state)'
+        );
+
+        return $statement->execute([
+            ':cp_s_id' => 0,
+            ':cp_acc_id' => $userId,
+            ':cp_point' => $points,
+            ':cp_date' => date('Y-m-d H:i:s'),
+            ':cp_state' => 'bonus',
+        ]);
+    }
+
     private function hasTable(string $table): bool
     {
         $pdo = Database::connection();

@@ -744,10 +744,18 @@ button {
   gap: 1rem;
 }
 
+.admin-grid--products {
+  margin-bottom: 1rem;
+}
+
 .admin-panel {
   display: grid;
   gap: 1rem;
   margin-bottom: 1.5rem;
+}
+
+.admin-panel + .admin-panel {
+  margin-top: 1.5rem;
 }
 
 .admin-panel__header {
@@ -892,6 +900,34 @@ button {
   gap: 0.6rem;
 }
 
+.admin-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.admin-pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.5rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  background: #ffffff;
+  color: #171717;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.admin-pagination__link--active {
+  background: #171717;
+  border-color: #171717;
+  color: #f9f7f2;
+}
+
 .admin-login {
   display: grid;
   place-items: center;
@@ -943,6 +979,60 @@ button {
   color: #8f3f2b;
 }
 
+.admin-search-card {
+  margin-bottom: 1rem;
+}
+
+.admin-search-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.admin-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.admin-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(31, 41, 51, 0.08);
+  background: rgba(244, 244, 242, 0.9);
+  color: #171717;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.admin-muted-inline {
+  color: #666666;
+  font-size: 0.86rem;
+}
+
+.admin-stock {
+  display: inline-flex;
+  min-width: 3rem;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.admin-stock--ok {
+  background: rgba(32, 123, 91, 0.12);
+  color: #17664d;
+}
+
+.admin-stock--none {
+  background: rgba(143, 63, 43, 0.1);
+  color: #8f3f2b;
+}
+
 @media (max-width: 960px) {
   .admin-grid {
     grid-template-columns: 1fr;
@@ -955,6 +1045,10 @@ button {
   .admin-panel__header {
     align-items: start;
     flex-direction: column;
+  }
+
+  .admin-search-form {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -2227,6 +2321,13 @@ textarea { min-height: 140px; resize: vertical; }
 .site-status-bar__text {
   font-size: 0.95rem;
   color: rgba(15, 23, 42, 0.8);
+}
+
+.site-status-bar__text a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
 }
 
 .member-badge {

@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Repositories\AdminOrderRepository;
+use App\Repositories\AdminMemberRepository;
+use App\Repositories\AdminProductRepository;
+use App\Repositories\SpecialMemberRequestRepository;
 
 final class AdminDashboardController
 {
@@ -13,6 +16,8 @@ final class AdminDashboardController
         require_admin_login();
 
         $repository = new AdminOrderRepository();
+        $specialRepository = new SpecialMemberRequestRepository();
+        $specialStatuses = ['docs_pending', 'pending'];
 
         echo render('layout', [
             'title' => '管理画面トップ',
@@ -21,6 +26,8 @@ final class AdminDashboardController
                 'pageLead' => '旧管理画面に近い導線で、受注管理と商品管理を順次統合していきます。',
                 'pendingCount' => $repository->countPending(),
                 'pendingOrders' => $repository->listPending(8),
+                'specialPendingCount' => $specialRepository->countByStatuses($specialStatuses),
+                'specialPendingRequests' => $specialRepository->listByStatuses($specialStatuses, 8),
             ]),
         ]);
     }
@@ -32,12 +39,40 @@ final class AdminDashboardController
 
     public function products(): void
     {
-        $this->renderPlaceholder('商品管理', '商品、型式、OEM、画像アップロードを旧管理画面に近い構成で整理します。');
+        require_admin_login();
+
+        $keyword = trim((string) ($_GET['key'] ?? ''));
+        $repository = new AdminProductRepository();
+
+        echo render('layout', [
+            'title' => '商品管理',
+            'content' => render('admin_products', [
+                'pageTitle' => '商品管理',
+                'pageLead' => '旧管理画面の並びを参考に、商品検索と一覧確認を先に整理しています。',
+                'keyword' => $keyword,
+                'products' => $repository->search($keyword),
+                'hasSearched' => $keyword !== '',
+            ]),
+        ]);
     }
 
     public function members(): void
     {
-        $this->renderPlaceholder('会員管理', '会員検索、会員詳細、ポイント調整を管理画面へ統合します。');
+        require_admin_login();
+
+        $keyword = trim((string) ($_GET['key'] ?? ''));
+        $repository = new AdminMemberRepository();
+
+        echo render('layout', [
+            'title' => '会員管理',
+            'content' => render('admin_members', [
+                'pageTitle' => '会員管理',
+                'pageLead' => '旧管理画面の検索導線を参考に、名前・会社名・電話番号・メール・ID で会員を確認できます。',
+                'keyword' => $keyword,
+                'members' => $repository->search($keyword),
+                'hasSearched' => $keyword !== '',
+            ]),
+        ]);
     }
 
     public function inquiries(): void
