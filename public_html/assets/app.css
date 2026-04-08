@@ -738,6 +738,19 @@ button {
   color: #666666;
 }
 
+.admin-revision-badge {
+  display: inline-flex;
+  align-items: center;
+  margin: 0.35rem 0 0;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid #c2410c;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
 .admin-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2634,12 +2647,181 @@ textarea { min-height: 140px; resize: vertical; }
     rgba(255, 255, 255, 0.88);
 }
 
+body.has-admin-modal {
+  overflow: hidden;
+}
+
+.admin-order-modal[hidden] {
+  display: none;
+}
+
+.admin-order-modal {
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  z-index: 99999 !important;
+}
+
+.admin-order-modal__backdrop {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  background: rgba(15, 23, 42, 0.48);
+  backdrop-filter: blur(2px);
+}
+
+.admin-order-modal__dialog {
+  position: relative;
+  width: min(920px, 100%);
+  max-height: 100%;
+  margin: 0;
+  overflow: auto;
+  border-radius: 24px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #f8f7f3;
+  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.24);
+}
+
+.admin-order-modal__header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem 0.85rem;
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+  background: rgba(248, 247, 243, 0.96);
+  backdrop-filter: blur(10px);
+}
+
+.admin-order-modal__close {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #171717;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.admin-order-modal__body {
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.admin-order-modal__loading,
+.admin-order-modal__empty {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: #666666;
+}
+
+.admin-order-detail {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.admin-order-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-order-detail .admin-card {
+  padding: 1rem;
+}
+
+.admin-order-summary-grid {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-order-summary-grid div {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.admin-order-summary-grid span {
+  color: #666666;
+  font-size: 0.82rem;
+}
+
+.admin-order-summary-grid strong {
+  color: #171717;
+  font-size: 0.96rem;
+}
+
+.admin-order-section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.admin-order-section details {
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 16px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.admin-order-section summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 0.9rem 1rem;
+  font-weight: 700;
+}
+
+.admin-order-section summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-order-section summary::after {
+  content: "+";
+  float: right;
+  color: #666666;
+  font-size: 1rem;
+}
+
+.admin-order-section details[open] summary::after {
+  content: "-";
+}
+
+.admin-order-section__body {
+  padding: 0 1rem 1rem;
+}
+
+.admin-order-section__body .admin-card {
+  background: #f8f7f3;
+}
+
+.admin-order-detail .admin-table th,
+.admin-order-detail .admin-table td {
+  padding: 0.65rem 0.55rem;
+  font-size: 0.92rem;
+}
+
 @media (max-width: 960px) {
   .account-grid,
   .account-tools-grid,
   .summary-chip-grid,
   .cart-overview,
-  .cart-card {
+  .cart-card,
+  .admin-order-summary-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -2650,6 +2832,19 @@ textarea { min-height: 140px; resize: vertical; }
   .cart-summary {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .admin-order-modal__dialog {
+    width: 100%;
+    max-height: 100%;
+    margin: 0;
+    border-radius: 22px;
+  }
+
+  .admin-order-modal__body,
+  .admin-order-modal__header {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .account-action-row .button,

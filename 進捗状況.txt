@@ -187,3 +187,29 @@
 - 公開環境では /admin/orders/{id} のパス形式で取りこぼしがあったため、/admin/orders?s_id=注文番号 形式でも詳細を表示できるように調整
 - 特別会員申請一覧は Basic 認証から管理画面ログイン必須へ移行
 - 管理画面基盤と受注明細追加までを git commit / push 済み
+
+追記日: 2026-04-08
+- 公開環境への反映手段を FTP から SSH / SCP へ切り替え
+- 接続先は umeoka.sixcore.jp:10022、公開ルートは /home/umeoka/umeoka.sixcore.jp/public_html を使用
+- 今後は編集や更新を行った場合、必要ファイルを SSH / SCP でアップロード完了まで行う運用に変更
+- 人が読むための更新手順書として document/ssh_scp_update_manual.md を追加
+- 実際の公開反映先は /home/umeoka/umeoka.sixcore.jp/ 側の templates / src / assets であることを確認
+- /home/umeoka/umeoka.sixcore.jp/public_html/public_html は誤ってできた入れ子構成として扱い、今後の更新先から除外
+- 今後の正本パスはローカル / GitHub を /home/suisyan/Documents/csn/public_html、リモートを /home/umeoka/umeoka.sixcore.jp/public_html として統一する方針へ変更
+- 親側の templates / src / assets は暫定参照先として扱い、public_html 配下へ寄せる方向で整理を開始
+- ローカル作業ディレクトリの基点を /home/suisyan/Documents/csn へ持ち上げ、public_html 配下に src / templates / storage / database / prod_picture を移動
+- public_html/ra.php の bootstrap 参照を public_html/src/bootstrap.php へ変更
+- public_html 配下の src / templates / assets / database / storage をリモート public_html へ反映
+- 親ディレクトリ側の重複していた csn ディレクトリを削除
+- 本番の .env は親ディレクトリに残したまま、public_html/src/Config.php で親 .env を拾えるよう調整
+- 親ディレクトリ側の src / templates / assets を削除
+- リモート public_html 配下の重複していた csn ディレクトリを削除
+
+追記日: 2026-04-09
+- 親ディレクトリ側の空 admin ディレクトリを削除
+- /admin/login が引き続き 200 OK で応答することを確認
+- 今後の正本と更新先は public_html 配下のみとし、親ディレクトリ側の ra.php は正本として扱わない方針を codex_rules.md と手順書へ明記
+- 親ディレクトリ側に残っていた /home/umeoka/umeoka.sixcore.jp/ra.php を削除
+- 削除後も /search と /admin/login がともに 200 OK のままであることを確認
+- リモート public_html 配下の .git、.gitignore、README.md、.env.example、_notes、進捗状況.txt、index_old*.php、.htaccess の旧バックアップ類を削除
+- 商品画像参照で使われている /public_html/images は残置し、/search、/admin/login、/images/prod_picture/no_image.jpg の 200 OK を確認

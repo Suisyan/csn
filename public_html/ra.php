@@ -19,7 +19,7 @@ use App\Controllers\PayPalExpressController;
 use App\Controllers\SearchController;
 use App\Controllers\SpecialMemberController;
 
-require dirname(__DIR__) . '/src/bootstrap.php';
+require __DIR__ . '/src/bootstrap.php';
 
 header('X-Robots-Tag: noindex, nofollow, noarchive', true);
 
@@ -53,6 +53,8 @@ try {
     $router->get('/admin/orders/show', [AdminOrderController::class, 'show']);
     $router->get('/admin/order', [AdminOrderController::class, 'show']);
     $router->get('/admin/order/{id}', [AdminOrderController::class, 'show']);
+    $router->post('/admin/orders/{id}/bank', [AdminOrderController::class, 'saveBank']);
+    $router->post('/admin/orders/{id}/shipping', [AdminOrderController::class, 'saveShipping']);
     $router->get('/admin/products', [AdminProductController::class, 'index']);
     $router->get('/admin/members', [AdminMemberController::class, 'index']);
     $router->get('/admin/inquiries', [AdminDashboardController::class, 'inquiries']);
