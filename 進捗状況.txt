@@ -213,3 +213,8 @@
 - 削除後も /search と /admin/login がともに 200 OK のままであることを確認
 - リモート public_html 配下の .git、.gitignore、README.md、.env.example、_notes、進捗状況.txt、index_old*.php、.htaccess の旧バックアップ類を削除
 - 商品画像参照で使われている /public_html/images は残置し、/search、/admin/login、/images/prod_picture/no_image.jpg の 200 OK を確認
+
+追記日: 2026-04-13
+- 未検証項目としていた 1〜3（特別会員フロー実機、メール送信、承認後の価格切替）は検証済み
+- 現時点の未検証は「注文確定と同時に在庫が正しく減算されるか」のみ
+- 次の優先作業を、注文確定時の在庫減算連動の実機検証に更新
